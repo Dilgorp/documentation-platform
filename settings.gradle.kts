@@ -1,3 +1,4 @@
 include(
-        "gateway"
+        "gateway",
+        "schema"
 )
