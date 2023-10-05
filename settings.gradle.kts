@@ -1,4 +1,5 @@
 include(
         "gateway",
-        "schema"
+        "schema",
+        "editor",
 )
