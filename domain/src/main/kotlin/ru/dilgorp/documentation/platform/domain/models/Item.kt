@@ -19,6 +19,6 @@ data class ItemCategory(
     val id: Long? = null,
     val itemId: Long,
     val category: Category,
-    val parentCategory: Category,
+    val parentCategory: Category? = null,
     val value: String,
 )
