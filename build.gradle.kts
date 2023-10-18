@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion by extra { "1.8.22" }
 val platformVersion by extra { "0.0.1-SNAPSHOT" }
+val jacksonAnnotationsVersion by extra { "2.15.1" }
 
 plugins {
     idea
@@ -15,7 +16,12 @@ plugins {
 }
 
 subprojects {
-    apply { plugin("org.jetbrains.kotlin.jvm") }
+    apply {
+        plugin("java")
+        plugin("idea")
+        plugin("io.spring.dependency-management")
+        plugin("org.springframework.boot")
+    }
     group = "ru.dilgorp.documentation.platform"
     configurations {
         all { exclude(module = "slf4j-log4j12") }
