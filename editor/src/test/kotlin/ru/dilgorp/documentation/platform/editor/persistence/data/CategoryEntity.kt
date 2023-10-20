@@ -1,7 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.persistence.data
 
+import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.persistence.entities.CategoryEntity
-import ru.dilgorp.documentation.platform.editor.utils.randomId
 
 fun categoryEntity(
     id: Long? = randomId(),

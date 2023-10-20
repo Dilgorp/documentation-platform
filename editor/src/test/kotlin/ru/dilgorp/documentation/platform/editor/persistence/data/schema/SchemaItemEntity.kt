@@ -1,7 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.persistence.data.schema
 
+import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.persistence.entities.schema.SchemaItemEntity
-import ru.dilgorp.documentation.platform.editor.utils.randomId
 
 fun schemaItemEntity(
     id: Long? = randomId(),

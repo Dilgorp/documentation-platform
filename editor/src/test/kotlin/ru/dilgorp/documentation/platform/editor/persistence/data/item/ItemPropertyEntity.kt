@@ -1,7 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.persistence.data.item
 
+import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemPropertyEntity
-import ru.dilgorp.documentation.platform.editor.utils.randomId
 
 fun itemPropertyEntity(
     id: Long? = randomId(),

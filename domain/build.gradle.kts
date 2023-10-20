@@ -13,12 +13,9 @@ plugins {
 
 
 val bootJar: BootJar by tasks
-val jar: Jar by tasks
 
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
-    implementation("org.liquibase:liquibase-core")
 }
 
 bootJar.enabled = false
-jar.enabled = false

@@ -1,5 +1,7 @@
 package ru.dilgorp.documentation.platform.domain.test.utils
 
-import org.apache.commons.lang3.RandomUtils
+import java.util.concurrent.ThreadLocalRandom
 
-fun randomId() = RandomUtils.nextLong()
+fun randomId() = ThreadLocalRandom.current().nextLong()
+
+fun Long.diffFromRandom(): Long = if (this > 0) this - 1 else this + 1
