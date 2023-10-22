@@ -6,7 +6,7 @@ import org.springframework.test.context.ContextConfiguration
 import ru.dilgorp.documentation.platform.editor.configurations.PostgresContainerInitializer
 
 @SpringBootTest
-@ActiveProfiles
+@ActiveProfiles("test")
 @ContextConfiguration(
     initializers = [
         PostgresContainerInitializer::class,

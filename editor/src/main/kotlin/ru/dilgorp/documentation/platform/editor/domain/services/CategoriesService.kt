@@ -13,4 +13,15 @@ class CategoriesService(
 
     fun save(category: Category): Category =
         categoriesRepository.save(category.toEntity()).toModel()
+
+    fun findById(categoryId: Long): Category =
+        categoriesRepository.findById(categoryId).get().toModel()
+
+    fun findAllByIds(categoriesIds: List<Long>): Map<Long, Category> =
+        categoriesRepository.findAllById(categoriesIds)
+            .associate { requireNotNull(it.id) to it.toModel() }
+
+    fun findAll(): List<Category> =
+        categoriesRepository.findAll().map { it.toModel() }
+
 }
