@@ -20,7 +20,15 @@ data class ItemDto(
     val description: String? = null,
     val categories: List<ItemCategoryDto> = emptyList(),
     val properties: List<ItemPropertyDto> = emptyList(),
-)
+) {
+    fun toModel(): Item = Item(
+        id = id,
+        title = title,
+        description = description,
+        categories = categories.map { it.toModel() },
+        properties = properties.map { it.toModel() }
+    )
+}
 
 fun Item.toDto(): ItemDto = ItemDto(
     id = id,
@@ -35,7 +43,14 @@ data class ItemPropertyDto(
     val itemId: Long,
     val property: PropertyDto,
     val value: String,
-)
+) {
+    fun toModel(): ItemProperty = ItemProperty(
+        id = id,
+        itemId = itemId,
+        property = property.toModel(),
+        value = value,
+    )
+}
 
 fun ItemProperty.toDto(): ItemPropertyDto = ItemPropertyDto(
     id = id,
@@ -50,7 +65,15 @@ data class ItemCategoryDto(
     val category: CategoryDto,
     val parentCategory: CategoryDto? = null,
     val value: String,
-)
+) {
+    fun toModel(): ItemCategory = ItemCategory(
+        id = id,
+        itemId = itemId,
+        category = category.toModel(),
+        parentCategory = parentCategory?.toModel(),
+        value = value,
+    )
+}
 
 fun ItemCategory.toDto(): ItemCategoryDto = ItemCategoryDto(
     id = id,

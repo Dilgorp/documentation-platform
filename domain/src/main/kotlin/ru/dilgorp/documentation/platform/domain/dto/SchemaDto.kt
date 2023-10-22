@@ -17,7 +17,13 @@ data class SchemaItemDto(
     val id: Long? = null,
     val schemaId: Long,
     val item: ItemDto,
-)
+) {
+    fun toModel(): SchemaItem = SchemaItem(
+        id = id,
+        schemaId = schemaId,
+        item = item.toModel(),
+    )
+}
 
 fun SchemaItem.toDto(): SchemaItemDto = SchemaItemDto(
     id = id,
@@ -28,11 +34,20 @@ fun SchemaItem.toDto(): SchemaItemDto = SchemaItemDto(
 data class SchemaDto(
     val id: Long? = null,
     val title: String,
+    val description: String? = null,
     val items: List<SchemaItemDto> = emptyList(),
-)
+) {
+    fun toModel(): Schema = Schema(
+        id = id,
+        title = title,
+        description = description,
+        items = items.map { it.toModel() }
+    )
+}
 
 fun Schema.toDto(): SchemaDto = SchemaDto(
     id = id,
     title = title,
+    description = description,
     items = items.map { it.toDto() }
 )
