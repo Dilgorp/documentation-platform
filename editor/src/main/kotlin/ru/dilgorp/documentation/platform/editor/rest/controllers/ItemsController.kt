@@ -34,13 +34,25 @@ class ItemsController(
         itemDto: ItemDto,
     ): ItemDto = itemsService.save(itemDto.toModel()).toDto()
 
-    @PatchMapping("/{itemId}/property/add")
-    fun addProperty(
+    @PostMapping("/{itemId}/properties")
+    fun createProperty(
         @PathVariable("itemId")
         itemId: Long,
         @RequestBody
         patchDto: PatchPropertyDto
     ) {
-        itemsService.createOrUpdate(itemId, patchDto.propertyId, patchDto.propertyValue)
+        itemsService.createOrUpdate(patchDto.toModel(itemId))
+    }
+
+    @PatchMapping("/{itemId}/properties/{itemPropertyId}")
+    fun updateProperty(
+        @PathVariable("itemId")
+        itemId: Long,
+        @PathVariable("itemPropertyId")
+        itemPropertyId: Long,
+        @RequestBody
+        patchDto: PatchPropertyDto
+    ) {
+        itemsService.createOrUpdate(patchDto.toModel(itemPropertyId, itemId))
     }
 }

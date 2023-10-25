@@ -3,6 +3,7 @@ package ru.dilgorp.documentation.platform.domain.dto
 import ru.dilgorp.documentation.platform.domain.models.Item
 import ru.dilgorp.documentation.platform.domain.models.ItemCategory
 import ru.dilgorp.documentation.platform.domain.models.ItemProperty
+import ru.dilgorp.documentation.platform.domain.models.PatchItemProperty
 
 data class ItemListDto(
     val id: Long,
@@ -86,4 +87,17 @@ fun ItemCategory.toDto(): ItemCategoryDto = ItemCategoryDto(
 data class PatchPropertyDto(
     val propertyId: Long,
     val propertyValue: String,
-)
+) {
+    fun toModel(itemId: Long): PatchItemProperty = PatchItemProperty(
+        itemId = itemId,
+        propertyId = propertyId,
+        value = propertyValue,
+    )
+
+    fun toModel(id: Long, itemId: Long): PatchItemProperty = PatchItemProperty(
+        id = id,
+        itemId = itemId,
+        propertyId = propertyId,
+        value = propertyValue,
+    )
+}

@@ -56,3 +56,10 @@ fun ItemProperty.toEntity(): ItemPropertyEntity = ItemPropertyEntity(
     propertyId = requireNotNull(property.id),
     propertyValue = value,
 )
+
+fun PatchItemProperty.toEntity(): ItemPropertyEntity = ItemPropertyEntity(
+    id = id,
+    itemId = itemId,
+    propertyId = propertyId,
+    propertyValue = value,
+)

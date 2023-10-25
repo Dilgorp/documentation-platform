@@ -103,17 +103,33 @@ class ItemsControllerTest : BaseControllerTest() {
     }
 
     @Test
-    fun `addProperty - happy path`() {
+    fun `createProperty - happy path`() {
         val itemId = randomId()
         val dto = patchPropertyDto()
 
         mvc.perform(
-            patch("/items/$itemId/property/add")
+            post("/items/$itemId/properties")
                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        verify(itemsService).createOrUpdate(itemId, dto.propertyId, dto.propertyValue)
+        verify(itemsService).createOrUpdate(dto.toModel(itemId))
+    }
+
+    @Test
+    fun `updateProperty - happy path`() {
+        val itemId = randomId()
+        val itemPropertyId = randomId()
+        val dto = patchPropertyDto()
+
+        mvc.perform(
+            patch("/items/$itemId/properties/$itemPropertyId")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(itemsService).createOrUpdate(dto.toModel(itemPropertyId, itemId))
     }
 }

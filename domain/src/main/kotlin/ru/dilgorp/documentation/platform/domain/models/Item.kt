@@ -22,3 +22,10 @@ data class ItemCategory(
     val parentCategory: Category? = null,
     val value: String,
 )
+
+data class PatchItemProperty(
+    val id: Long? = null,
+    val itemId: Long,
+    val propertyId: Long,
+    val value: String,
+)
