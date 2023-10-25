@@ -29,3 +29,10 @@ data class PatchItemProperty(
     val propertyId: Long,
     val value: String,
 )
+
+data class PatchItemCategory(
+    val id: Long? = null,
+    val itemId: Long,
+    val categoryId: Long,
+    val value: String,
+)

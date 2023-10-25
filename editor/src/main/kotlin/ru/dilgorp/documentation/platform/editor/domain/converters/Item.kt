@@ -63,3 +63,10 @@ fun PatchItemProperty.toEntity(): ItemPropertyEntity = ItemPropertyEntity(
     propertyId = propertyId,
     propertyValue = value,
 )
+
+fun PatchItemCategory.toEntity(): ItemCategoryEntity = ItemCategoryEntity(
+    id = id,
+    itemId = itemId,
+    categoryId = categoryId,
+    categoryValue = value,
+)

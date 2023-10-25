@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.ItemDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchCategoryDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyDto
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
@@ -114,7 +115,7 @@ class ItemsControllerTest : BaseControllerTest() {
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        verify(itemsService).createOrUpdate(dto.toModel(itemId))
+        verify(itemsService).createOrUpdateProperty(dto.toModel(itemId))
     }
 
     @Test
@@ -130,6 +131,37 @@ class ItemsControllerTest : BaseControllerTest() {
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        verify(itemsService).createOrUpdate(dto.toModel(itemPropertyId, itemId))
+        verify(itemsService).createOrUpdateProperty(dto.toModel(itemPropertyId, itemId))
+    }
+
+    @Test
+    fun `createCategory - happy path`() {
+        val itemId = randomId()
+        val dto = patchCategoryDto()
+
+        mvc.perform(
+            post("/items/$itemId/categories")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(itemsService).createOrUpdateCategory(dto.toModel(itemId))
+    }
+
+    @Test
+    fun `updateCategory - happy path`() {
+        val itemId = randomId()
+        val itemCategoryId = randomId()
+        val dto = patchCategoryDto()
+
+        mvc.perform(
+            patch("/items/$itemId/categories/$itemCategoryId")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(itemsService).createOrUpdateCategory(dto.toModel(itemCategoryId, itemId))
     }
 }

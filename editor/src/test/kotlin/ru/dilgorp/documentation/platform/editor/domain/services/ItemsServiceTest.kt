@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemCategory
 import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemProperty
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.domain.test.utils.randomUuid
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
 import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
+import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemCategoryEntity
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemEntity
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemPropertyEntity
 import java.util.*
@@ -106,13 +108,13 @@ internal class ItemsServiceTest : BaseServiceTest() {
     }
 
     @Test
-    fun `createOrUpdate - create - happy path`() {
+    fun `createOrUpdateProperty - create - happy path`() {
         val itemProperty = patchItemProperty(id = null)
 
         whenever(itemsPropertiesRepository.findByItemIdAndPropertyId(itemProperty.itemId, itemProperty.propertyId))
             .thenReturn(null)
 
-        itemsService.createOrUpdate(itemProperty)
+        itemsService.createOrUpdateProperty(itemProperty)
 
         verify(itemsPropertiesRepository, times(0)).findById(any())
         verify(itemsPropertiesRepository).findByItemIdAndPropertyId(itemProperty.itemId, itemProperty.propertyId)
@@ -120,7 +122,7 @@ internal class ItemsServiceTest : BaseServiceTest() {
     }
 
     @Test
-    fun `createOrUpdate - update - happy path`() {
+    fun `createOrUpdateProperty - update - happy path`() {
         val itemProperty = patchItemProperty()
 
         val itemPropertyEntity = itemPropertyEntity(
@@ -132,7 +134,7 @@ internal class ItemsServiceTest : BaseServiceTest() {
         whenever(itemsPropertiesRepository.findById(itemProperty.id!!))
             .thenReturn(Optional.of(itemPropertyEntity))
 
-        itemsService.createOrUpdate(itemProperty)
+        itemsService.createOrUpdateProperty(itemProperty)
 
         verify(itemsPropertiesRepository).findById(itemProperty.id!!)
         verify(itemsPropertiesRepository, times(0)).findByItemIdAndPropertyId(any(), any())
@@ -140,7 +142,7 @@ internal class ItemsServiceTest : BaseServiceTest() {
     }
 
     @Test
-    fun `createOrUpdate - update - by itemId and propertyId`() {
+    fun `createOrUpdateProperty - update - by itemId and propertyId`() {
         val propertyValue = randomUuid()
 
         val itemProperty = patchItemProperty(id = null)
@@ -154,10 +156,66 @@ internal class ItemsServiceTest : BaseServiceTest() {
         whenever(itemsPropertiesRepository.findByItemIdAndPropertyId(itemProperty.itemId, itemProperty.propertyId))
             .thenReturn(itemPropertyEntity)
 
-        itemsService.createOrUpdate(itemProperty)
+        itemsService.createOrUpdateProperty(itemProperty)
 
         verify(itemsPropertiesRepository, times(0)).findById(any())
         verify(itemsPropertiesRepository).findByItemIdAndPropertyId(itemProperty.itemId, itemProperty.propertyId)
         verify(itemsPropertiesRepository).save(itemPropertyEntity.copy(propertyValue = itemProperty.value))
+    }
+
+    @Test
+    fun `createOrUpdateCategory - create - happy path`() {
+        val itemCategory = patchItemCategory(id = null)
+
+        whenever(itemsCategoriesRepository.findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId))
+            .thenReturn(null)
+
+        itemsService.createOrUpdateCategory(itemCategory)
+
+        verify(itemsCategoriesRepository, times(0)).findById(any())
+        verify(itemsCategoriesRepository).findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId)
+        verify(itemsCategoriesRepository).save(itemCategory.toEntity())
+    }
+
+    @Test
+    fun `createOrUpdateCategory - update - happy path`() {
+        val itemCategory = patchItemCategory()
+
+        val itemCategoryEntity = itemCategoryEntity(
+            id = itemCategory.id!!,
+            itemId = itemCategory.itemId,
+            categoryId = itemCategory.categoryId,
+        )
+
+        whenever(itemsCategoriesRepository.findById(itemCategory.id!!))
+            .thenReturn(Optional.of(itemCategoryEntity))
+
+        itemsService.createOrUpdateCategory(itemCategory)
+
+        verify(itemsCategoriesRepository).findById(itemCategory.id!!)
+        verify(itemsCategoriesRepository, times(0)).findByItemIdAndCategoryId(any(), any())
+        verify(itemsCategoriesRepository).save(itemCategoryEntity.copy(categoryValue = itemCategory.value))
+    }
+
+    @Test
+    fun `createOrUpdateCategory - update - by itemId and propertyId`() {
+        val propertyValue = randomUuid()
+
+        val itemCategory = patchItemCategory(id = null)
+        val itemCategoryEntity = itemCategoryEntity(
+            id = randomId(),
+            itemId = itemCategory.itemId,
+            categoryId = itemCategory.categoryId,
+            categoryValue = propertyValue,
+        )
+
+        whenever(itemsCategoriesRepository.findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId))
+            .thenReturn(itemCategoryEntity)
+
+        itemsService.createOrUpdateCategory(itemCategory)
+
+        verify(itemsCategoriesRepository, times(0)).findById(any())
+        verify(itemsCategoriesRepository).findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId)
+        verify(itemsCategoriesRepository).save(itemCategoryEntity.copy(categoryValue = itemCategory.value))
     }
 }

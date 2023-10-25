@@ -1,9 +1,6 @@
 package ru.dilgorp.documentation.platform.domain.dto
 
-import ru.dilgorp.documentation.platform.domain.models.Item
-import ru.dilgorp.documentation.platform.domain.models.ItemCategory
-import ru.dilgorp.documentation.platform.domain.models.ItemProperty
-import ru.dilgorp.documentation.platform.domain.models.PatchItemProperty
+import ru.dilgorp.documentation.platform.domain.models.*
 
 data class ItemListDto(
     val id: Long,
@@ -99,5 +96,23 @@ data class PatchPropertyDto(
         itemId = itemId,
         propertyId = propertyId,
         value = propertyValue,
+    )
+}
+
+data class PatchCategoryDto(
+    val categoryId: Long,
+    val categoryValue: String,
+) {
+    fun toModel(itemId: Long): PatchItemCategory = PatchItemCategory(
+        itemId = itemId,
+        categoryId = categoryId,
+        value = categoryValue,
+    )
+
+    fun toModel(id: Long, itemId: Long): PatchItemCategory = PatchItemCategory(
+        id = id,
+        itemId = itemId,
+        categoryId = categoryId,
+        value = categoryValue,
     )
 }

@@ -1,6 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.persistence.repositories.item
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.editor.base.BaseRepositoryTest
@@ -38,5 +39,34 @@ class ItemsCategoriesRepositoryTest : BaseRepositoryTest() {
 
         val foundedEntity = itemsCategoriesRepository.findById(savedEntity.id!!).get()
         assertEquals(savedEntity, foundedEntity)
+    }
+
+    @Test
+    fun `findByItemIdAndCategoryId - happy path`() {
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+        val categoryEntity = categoriesRepository.save(categoryEntity(id = null))
+
+        val entity = itemCategoryEntity(
+            id = null,
+            itemId = itemEntity.id!!,
+            categoryId = categoryEntity.id!!,
+            parentCategoryId = null,
+        )
+
+        val savedEntity = itemsCategoriesRepository.save(entity)
+
+        assertEquals(entity.copy(id = savedEntity.id), savedEntity)
+
+        val foundedEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
+        assertEquals(savedEntity, foundedEntity)
+    }
+
+    @Test
+    fun `findByItemIdAndCategoryId - entity not found`() {
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+        val categoryEntity = categoriesRepository.save(categoryEntity(id = null))
+
+        val foundedEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
+        assertNull(foundedEntity)
     }
 }
