@@ -1,0 +1,15 @@
+GET http://localhost:8081/categories
+
+###
+POST http://localhost:8081/categories
+Content-Type: application/json
+
+{
+  "title": "category 3"
+}
+
+###
+GET http://localhost:8081/categories/map?ids=1&ids=2
+
+###
+GET http://localhost:8081/categories/1

@@ -1,0 +1,15 @@
+GET http://localhost:8081/properties
+
+###
+POST http://localhost:8081/properties
+Content-Type: application/json
+
+{
+  "title": "property 3"
+}
+
+###
+GET http://localhost:8081/properties/map?ids=1&ids=2
+
+###
+GET http://localhost:8081/properties/1

@@ -8,10 +8,12 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
+import ru.dilgorp.documentation.platform.domain.test.utils.randomUuid
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
 import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemEntity
+import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemPropertyEntity
 import java.util.*
 
 internal class ItemsServiceTest : BaseServiceTest() {
@@ -100,4 +102,48 @@ internal class ItemsServiceTest : BaseServiceTest() {
         verify(itemsRepository).findAll()
     }
 
+    @Test
+    fun `createOrUpdate - happy path`() {
+        val itemId = randomId()
+        val propertyId = randomId()
+        val propertyValue = randomUuid()
+
+        val itemPropertyEntity = itemPropertyEntity(
+            id = null,
+            itemId = itemId,
+            propertyId = propertyId,
+            propertyValue = propertyValue,
+        )
+
+        whenever(itemsPropertiesRepository.findByItemIdAndPropertyId(itemId, propertyId))
+            .thenReturn(null)
+
+        itemsService.createOrUpdate(itemId, propertyId, propertyValue)
+
+        verify(itemsPropertiesRepository).findByItemIdAndPropertyId(itemId, propertyId)
+        verify(itemsPropertiesRepository).save(itemPropertyEntity)
+    }
+
+    @Test
+    fun `createOrUpdate - item property already exists`() {
+        val itemId = randomId()
+        val propertyId = randomId()
+        val propertyValue = randomUuid()
+        val itemPropertyId = randomId()
+
+        val itemPropertyEntity = itemPropertyEntity(
+            id = itemPropertyId,
+            itemId = itemId,
+            propertyId = propertyId,
+            propertyValue = propertyValue,
+        )
+
+        whenever(itemsPropertiesRepository.findByItemIdAndPropertyId(itemId, propertyId))
+            .thenReturn(itemPropertyEntity.copy(propertyValue = "some value"))
+
+        itemsService.createOrUpdate(itemId, propertyId, propertyValue)
+
+        verify(itemsPropertiesRepository).findByItemIdAndPropertyId(itemId, propertyId)
+        verify(itemsPropertiesRepository).save(itemPropertyEntity)
+    }
 }

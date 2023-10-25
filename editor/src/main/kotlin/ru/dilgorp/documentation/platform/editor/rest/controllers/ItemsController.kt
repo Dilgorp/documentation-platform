@@ -2,6 +2,7 @@ package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
 import ru.dilgorp.documentation.platform.domain.dto.ItemDto
+import ru.dilgorp.documentation.platform.domain.dto.PatchPropertyDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.editor.domain.services.ItemsService
 
@@ -32,4 +33,14 @@ class ItemsController(
         @RequestBody
         itemDto: ItemDto,
     ): ItemDto = itemsService.save(itemDto.toModel()).toDto()
+
+    @PatchMapping("/{itemId}/property/add")
+    fun addProperty(
+        @PathVariable("itemId")
+        itemId: Long,
+        @RequestBody
+        patchDto: PatchPropertyDto
+    ) {
+        itemsService.createOrUpdate(itemId, patchDto.propertyId, patchDto.propertyValue)
+    }
 }

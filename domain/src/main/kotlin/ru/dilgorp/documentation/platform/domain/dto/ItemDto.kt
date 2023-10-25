@@ -82,3 +82,8 @@ fun ItemCategory.toDto(): ItemCategoryDto = ItemCategoryDto(
     parentCategory = parentCategory?.toDto(),
     value = value,
 )
+
+data class PatchPropertyDto(
+    val propertyId: Long,
+    val propertyValue: String,
+)

@@ -6,13 +6,13 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.ItemDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyDto
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
 import ru.dilgorp.documentation.platform.editor.utils.andReturn
@@ -100,5 +100,20 @@ class ItemsControllerTest : BaseControllerTest() {
 
         assertEquals(dto, result)
         verify(itemsService).save(item)
+    }
+
+    @Test
+    fun `addProperty - happy path`() {
+        val itemId = randomId()
+        val dto = patchPropertyDto()
+
+        mvc.perform(
+            patch("/items/$itemId/property/add")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(itemsService).createOrUpdate(itemId, dto.propertyId, dto.propertyValue)
     }
 }
