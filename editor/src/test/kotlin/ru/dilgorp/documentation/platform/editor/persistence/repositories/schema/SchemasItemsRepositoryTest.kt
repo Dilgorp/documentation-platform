@@ -1,6 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.persistence.repositories.schema
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.editor.base.BaseRepositoryTest
@@ -37,5 +38,31 @@ class SchemasItemsRepositoryTest : BaseRepositoryTest() {
 
         val foundedEntity = schemasItemsRepository.findById(savedEntity.id!!).get()
         assertEquals(savedEntity, foundedEntity)
+    }
+
+    @Test
+    fun `findBySchemaIdAndItemId - happy path`() {
+        val schemaEntity = schemasRepository.save(schemaEntity(id = null))
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+
+        val entity = schemasItemsRepository.save(
+            schemaItemEntity(
+                id = null,
+                schemaId = schemaEntity.id!!,
+                itemId = itemEntity.id!!,
+            ),
+        )
+
+        val result = schemasItemsRepository.findBySchemaIdAndItemId(schemaEntity.id!!, itemEntity.id!!)
+        assertEquals(entity, result)
+    }
+
+    @Test
+    fun `findBySchemaIdAndItemId - not found`() {
+        val schemaEntity = schemasRepository.save(schemaEntity(id = null))
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+
+        val result = schemasItemsRepository.findBySchemaIdAndItemId(schemaEntity.id!!, itemEntity.id!!)
+        assertNull(result)
     }
 }

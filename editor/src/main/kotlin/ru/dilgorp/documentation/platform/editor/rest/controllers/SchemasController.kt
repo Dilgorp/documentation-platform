@@ -1,6 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
+import ru.dilgorp.documentation.platform.domain.dto.PatchSchemaItemDto
 import ru.dilgorp.documentation.platform.domain.dto.SchemaDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.editor.domain.services.SchemasService
@@ -25,4 +26,26 @@ class SchemasController(
         @RequestBody
         schemaDto: SchemaDto,
     ): SchemaDto = schemasService.save(schemaDto.toModel()).toDto()
+
+    @PostMapping("/{schemaId}/items")
+    fun createItem(
+        @PathVariable("schemaId")
+        schemaId: Long,
+        @RequestBody
+        patchDto: PatchSchemaItemDto
+    ) {
+        schemasService.createOrUpdateItem(patchDto.toModel(schemaId))
+    }
+
+    @PatchMapping("/{schemaId}/items/{schemaItemId}")
+    fun updateItem(
+        @PathVariable("schemaId")
+        schemaId: Long,
+        @PathVariable("schemaItemId")
+        schemaItemId: Long,
+        @RequestBody
+        patchDto: PatchSchemaItemDto
+    ) {
+        schemasService.createOrUpdateItem(patchDto.toModel(schemaItemId, schemaId))
+    }
 }

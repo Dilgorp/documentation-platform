@@ -6,12 +6,14 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.SchemaDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
+import ru.dilgorp.documentation.platform.domain.test.data.schema.patchSchemaItemDto
 import ru.dilgorp.documentation.platform.domain.test.data.schema.schema
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
@@ -76,5 +78,36 @@ class SchemasControllerTest : BaseControllerTest() {
 
         assertEquals(dto, result)
         verify(schemasService).save(schema)
+    }
+
+    @Test
+    fun `createItem - happy path`() {
+        val schemaId = randomId()
+        val dto = patchSchemaItemDto()
+
+        mvc.perform(
+            post("/schemas/$schemaId/items")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(schemasService).createOrUpdateItem(dto.toModel(schemaId))
+    }
+
+    @Test
+    fun `updateItem - happy path`() {
+        val schemaId = randomId()
+        val schemaItemId = randomId()
+        val dto = patchSchemaItemDto()
+
+        mvc.perform(
+            MockMvcRequestBuilders.patch("/schemas/$schemaId/items/$schemaItemId")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+
+        verify(schemasService).createOrUpdateItem(dto.toModel(schemaItemId, schemaId))
     }
 }

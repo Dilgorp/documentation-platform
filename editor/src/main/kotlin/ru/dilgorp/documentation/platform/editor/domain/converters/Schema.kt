@@ -1,6 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.domain.converters
 
 import ru.dilgorp.documentation.platform.domain.models.Item
+import ru.dilgorp.documentation.platform.domain.models.PatchSchemaItem
 import ru.dilgorp.documentation.platform.domain.models.Schema
 import ru.dilgorp.documentation.platform.domain.models.SchemaItem
 import ru.dilgorp.documentation.platform.editor.persistence.entities.schema.SchemaEntity
@@ -36,4 +37,10 @@ fun SchemaItem.toEntity(): SchemaItemEntity = SchemaItemEntity(
     id = id,
     schemaId = schemaId,
     itemId = requireNotNull(item.id),
+)
+
+fun PatchSchemaItem.toEntity(): SchemaItemEntity = SchemaItemEntity(
+    id = id,
+    schemaId = schemaId,
+    itemId = itemId,
 )

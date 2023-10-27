@@ -6,6 +6,7 @@ import ru.dilgorp.documentation.platform.editor.persistence.repositories.Propert
 import ru.dilgorp.documentation.platform.editor.persistence.repositories.item.ItemsCategoriesRepository
 import ru.dilgorp.documentation.platform.editor.persistence.repositories.item.ItemsPropertiesRepository
 import ru.dilgorp.documentation.platform.editor.persistence.repositories.item.ItemsRepository
+import ru.dilgorp.documentation.platform.editor.persistence.repositories.schema.SchemasItemsRepository
 import ru.dilgorp.documentation.platform.editor.persistence.repositories.schema.SchemasRepository
 
 abstract class BaseServiceTest : BaseTest() {
@@ -26,4 +27,7 @@ abstract class BaseServiceTest : BaseTest() {
 
     @MockBean
     protected lateinit var schemasRepository: SchemasRepository
+
+    @MockBean
+    protected lateinit var schemasItemsRepository: SchemasItemsRepository
 }

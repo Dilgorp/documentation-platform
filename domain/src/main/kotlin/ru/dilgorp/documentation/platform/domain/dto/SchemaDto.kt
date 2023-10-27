@@ -54,11 +54,14 @@ fun Schema.toDto(): SchemaDto = SchemaDto(
 )
 
 data class PatchSchemaItemDto(
-    val id: Long? = null,
-    val schemaId: Long,
     val itemId: Long,
 ) {
-    fun toModel(): PatchSchemaItem = PatchSchemaItem(
+    fun toModel(schemaId: Long): PatchSchemaItem = PatchSchemaItem(
+        schemaId = schemaId,
+        itemId = itemId,
+    )
+
+    fun toModel(id: Long, schemaId: Long): PatchSchemaItem = PatchSchemaItem(
         id = id,
         schemaId = schemaId,
         itemId = itemId,

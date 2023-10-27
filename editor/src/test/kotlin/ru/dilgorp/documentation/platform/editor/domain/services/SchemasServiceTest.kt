@@ -1,11 +1,14 @@
 package ru.dilgorp.documentation.platform.editor.domain.services
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import ru.dilgorp.documentation.platform.domain.test.data.schema.patchSchemaItem
 import ru.dilgorp.documentation.platform.domain.test.data.schema.schema
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
@@ -77,4 +80,26 @@ internal class SchemasServiceTest : BaseServiceTest() {
         verify(schemasRepository).findAll()
     }
 
+    @Test
+    fun `createOrUpdateItem - happy path`() {
+        val patchSchemaItem = patchSchemaItem(itemId = 1)
+
+        whenever(schemasItemsRepository.findById(patchSchemaItem.id!!))
+            .thenReturn(Optional.of(patchSchemaItem.toEntity().copy(itemId = 2)))
+
+        schemasService.createOrUpdateItem(patchSchemaItem)
+
+        verify(schemasItemsRepository).findById(patchSchemaItem.id!!)
+        verify(schemasItemsRepository).save(patchSchemaItem.toEntity())
+    }
+
+    @Test
+    fun `createOrUpdateItem - create`() {
+        val patchSchemaItem = patchSchemaItem(id = null)
+
+        schemasService.createOrUpdateItem(patchSchemaItem)
+
+        verify(schemasItemsRepository, times(0)).findById(any())
+        verify(schemasItemsRepository).save(patchSchemaItem.toEntity())
+    }
 }
