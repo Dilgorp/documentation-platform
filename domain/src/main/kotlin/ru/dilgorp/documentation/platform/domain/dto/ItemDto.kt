@@ -101,11 +101,13 @@ data class PatchPropertyDto(
 
 data class PatchCategoryDto(
     val categoryId: Long,
+    val parentCategoryId: Long? = null,
     val categoryValue: String,
 ) {
     fun toModel(itemId: Long): PatchItemCategory = PatchItemCategory(
         itemId = itemId,
         categoryId = categoryId,
+        parentCategoryId = parentCategoryId,
         value = categoryValue,
     )
 
@@ -113,6 +115,7 @@ data class PatchCategoryDto(
         id = id,
         itemId = itemId,
         categoryId = categoryId,
+        parentCategoryId = parentCategoryId,
         value = categoryValue,
     )
 }

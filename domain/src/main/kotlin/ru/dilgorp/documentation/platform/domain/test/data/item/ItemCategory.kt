@@ -25,10 +25,12 @@ fun patchItemCategory(
     id: Long? = randomId(),
     itemId: Long = randomId(),
     categoryId: Long = randomId(),
+    parentCategoryId: Long = randomId(),
     value: String = randomUuid(),
 ): PatchItemCategory = PatchItemCategory(
     id = id,
     itemId = itemId,
     categoryId = categoryId,
+    parentCategoryId = parentCategoryId,
     value = value,
 )

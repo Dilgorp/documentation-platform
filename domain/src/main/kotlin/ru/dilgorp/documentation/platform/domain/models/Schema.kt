@@ -12,3 +12,9 @@ data class SchemaItem(
     val schemaId: Long,
     val item: Item,
 )
+
+data class PatchSchemaItem(
+    val id: Long? = null,
+    val schemaId: Long,
+    val itemId: Long,
+)

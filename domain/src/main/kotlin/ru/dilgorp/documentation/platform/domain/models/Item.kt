@@ -34,5 +34,6 @@ data class PatchItemCategory(
     val id: Long? = null,
     val itemId: Long,
     val categoryId: Long,
+    val parentCategoryId: Long? = null,
     val value: String,
 )

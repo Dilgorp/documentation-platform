@@ -194,19 +194,22 @@ internal class ItemsServiceTest : BaseServiceTest() {
 
         verify(itemsCategoriesRepository).findById(itemCategory.id!!)
         verify(itemsCategoriesRepository, times(0)).findByItemIdAndCategoryId(any(), any())
-        verify(itemsCategoriesRepository).save(itemCategoryEntity.copy(categoryValue = itemCategory.value))
+        verify(itemsCategoriesRepository).save(
+            itemCategoryEntity.copy(
+                categoryValue = itemCategory.value,
+                parentCategoryId = itemCategory.parentCategoryId,
+            ),
+        )
     }
 
     @Test
     fun `createOrUpdateCategory - update - by itemId and propertyId`() {
-        val propertyValue = randomUuid()
 
         val itemCategory = patchItemCategory(id = null)
         val itemCategoryEntity = itemCategoryEntity(
             id = randomId(),
             itemId = itemCategory.itemId,
             categoryId = itemCategory.categoryId,
-            categoryValue = propertyValue,
         )
 
         whenever(itemsCategoriesRepository.findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId))
@@ -216,6 +219,11 @@ internal class ItemsServiceTest : BaseServiceTest() {
 
         verify(itemsCategoriesRepository, times(0)).findById(any())
         verify(itemsCategoriesRepository).findByItemIdAndCategoryId(itemCategory.itemId, itemCategory.categoryId)
-        verify(itemsCategoriesRepository).save(itemCategoryEntity.copy(categoryValue = itemCategory.value))
+        verify(itemsCategoriesRepository).save(
+            itemCategoryEntity.copy(
+                categoryValue = itemCategory.value,
+                parentCategoryId = itemCategory.parentCategoryId,
+            ),
+        )
     }
 }

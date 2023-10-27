@@ -68,5 +68,6 @@ fun PatchItemCategory.toEntity(): ItemCategoryEntity = ItemCategoryEntity(
     id = id,
     itemId = itemId,
     categoryId = categoryId,
+    parentCategoryId = parentCategoryId,
     categoryValue = value,
 )

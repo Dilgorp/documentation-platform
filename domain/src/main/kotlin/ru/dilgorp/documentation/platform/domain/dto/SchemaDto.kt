@@ -1,5 +1,6 @@
 package ru.dilgorp.documentation.platform.domain.dto
 
+import ru.dilgorp.documentation.platform.domain.models.PatchSchemaItem
 import ru.dilgorp.documentation.platform.domain.models.Schema
 import ru.dilgorp.documentation.platform.domain.models.SchemaItem
 
@@ -51,3 +52,15 @@ fun Schema.toDto(): SchemaDto = SchemaDto(
     description = description,
     items = items.map { it.toDto() }
 )
+
+data class PatchSchemaItemDto(
+    val id: Long? = null,
+    val schemaId: Long,
+    val itemId: Long,
+) {
+    fun toModel(): PatchSchemaItem = PatchSchemaItem(
+        id = id,
+        schemaId = schemaId,
+        itemId = itemId,
+    )
+}

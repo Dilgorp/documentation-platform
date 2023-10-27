@@ -55,8 +55,10 @@ class ItemsService(
             itemsCategoriesRepository.findByItemIdAndCategoryId(patchItemCategory.itemId, patchItemCategory.categoryId)
         }
 
-        val entity = itemCategoryEntity?.copy(categoryValue = patchItemCategory.value)
-            ?: patchItemCategory.toEntity()
+        val entity = itemCategoryEntity?.copy(
+            parentCategoryId = patchItemCategory.parentCategoryId,
+            categoryValue = patchItemCategory.value,
+        ) ?: patchItemCategory.toEntity()
 
         itemsCategoriesRepository.save(entity)
     }
