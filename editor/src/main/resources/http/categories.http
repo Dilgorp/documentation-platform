@@ -5,6 +5,22 @@ POST http://localhost:8081/categories
 Content-Type: application/json
 
 {
+  "title": "category 1"
+}
+
+###
+POST http://localhost:8081/categories
+Content-Type: application/json
+
+{
+  "title": "category 2"
+}
+
+###
+POST http://localhost:8081/categories
+Content-Type: application/json
+
+{
   "title": "category 3"
 }
 

@@ -10,9 +10,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.ItemDto
+import ru.dilgorp.documentation.platform.domain.dto.ItemListDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
+import ru.dilgorp.documentation.platform.domain.dto.toListDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
 import ru.dilgorp.documentation.platform.domain.test.data.item.patchCategoryDto
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyDto
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
@@ -54,9 +57,9 @@ class ItemsControllerTest : BaseControllerTest() {
             get("/items")
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn(object : TypeReference<List<ItemDto>>() {})
+            .andReturn(object : TypeReference<List<ItemListDto>>() {})
 
-        assertEquals(models.map { it.toDto() }, result)
+        assertEquals(models.map { it.toListDto() }, result)
         verify(itemsService).findAll()
     }
 
@@ -87,9 +90,12 @@ class ItemsControllerTest : BaseControllerTest() {
     @Test
     fun `create - happy path`() {
         val item = item()
-        val dto = item.toDto()
+        val dto = patchItemDto(
+            title = item.title,
+            description = item.description,
+        )
 
-        whenever(itemsService.save(item)).thenReturn(item)
+        whenever(itemsService.save(item.copy(id = null))).thenReturn(item)
 
         val result = mvc.perform(
             post("/items")
@@ -99,7 +105,29 @@ class ItemsControllerTest : BaseControllerTest() {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn(ItemDto::class)
 
-        assertEquals(dto, result)
+        assertEquals(item.toDto(), result)
+        verify(itemsService).save(item.copy(id = null))
+    }
+
+    @Test
+    fun `update - happy path`() {
+        val item = item()
+        val dto = patchItemDto(
+            title = item.title,
+            description = item.description,
+        )
+
+        whenever(itemsService.save(item)).thenReturn(item)
+
+        val result = mvc.perform(
+            patch("/items/${item.id}")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn(ItemDto::class)
+
+        assertEquals(item.toDto(), result)
         verify(itemsService).save(item)
     }
 

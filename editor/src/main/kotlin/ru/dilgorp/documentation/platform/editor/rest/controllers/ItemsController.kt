@@ -1,10 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
-import ru.dilgorp.documentation.platform.domain.dto.ItemDto
-import ru.dilgorp.documentation.platform.domain.dto.PatchCategoryDto
-import ru.dilgorp.documentation.platform.domain.dto.PatchPropertyDto
-import ru.dilgorp.documentation.platform.domain.dto.toDto
+import ru.dilgorp.documentation.platform.domain.dto.*
 import ru.dilgorp.documentation.platform.editor.domain.services.ItemsService
 
 @RestController
@@ -20,7 +17,7 @@ class ItemsController(
     ): ItemDto = itemsService.findById(id).toDto()
 
     @GetMapping
-    fun findAll(): List<ItemDto> = itemsService.findAll().map { it.toDto() }
+    fun findAll(): List<ItemListDto> = itemsService.findAll().map { it.toListDto() }
 
     @GetMapping("/map")
     fun findAllById(
@@ -32,8 +29,16 @@ class ItemsController(
     @PostMapping
     fun create(
         @RequestBody
-        itemDto: ItemDto,
+        itemDto: PatchItemDto,
     ): ItemDto = itemsService.save(itemDto.toModel()).toDto()
+
+    @PatchMapping("/{id}")
+    fun update(
+        @PathVariable("id")
+        id: Long,
+        @RequestBody
+        itemDto: PatchItemDto,
+    ): ItemDto = itemsService.save(itemDto.toModel(id)).toDto()
 
     @PostMapping("/{itemId}/properties")
     fun createProperty(

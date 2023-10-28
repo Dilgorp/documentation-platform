@@ -36,6 +36,22 @@ fun Item.toDto(): ItemDto = ItemDto(
     properties = properties.map { it.toDto() },
 )
 
+data class PatchItemDto(
+    val title: String,
+    val description: String? = null,
+) {
+    fun toModel(): Item = Item(
+        title = title,
+        description = description,
+    )
+
+    fun toModel(id: Long): Item = Item(
+        id = id,
+        title = title,
+        description = description,
+    )
+}
+
 data class ItemPropertyDto(
     val id: Long? = null,
     val itemId: Long,
