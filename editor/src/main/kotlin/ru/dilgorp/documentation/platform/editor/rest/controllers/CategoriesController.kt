@@ -2,6 +2,7 @@ package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
 import ru.dilgorp.documentation.platform.domain.dto.CategoryDto
+import ru.dilgorp.documentation.platform.domain.dto.PatchCategoryDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.editor.domain.services.CategoriesService
 
@@ -30,6 +31,14 @@ class CategoriesController(
     @PostMapping
     fun create(
         @RequestBody
-        categoryDto: CategoryDto,
+        categoryDto: PatchCategoryDto,
     ): CategoryDto = categoriesService.save(categoryDto.toModel()).toDto()
+
+    @PatchMapping("/{id}")
+    fun update(
+        @PathVariable("id")
+        id: Long,
+        @RequestBody
+        categoryDto: PatchCategoryDto,
+    ): CategoryDto = categoriesService.save(categoryDto.toModel(id)).toDto()
 }

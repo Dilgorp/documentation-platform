@@ -12,6 +12,19 @@ data class CategoryDto(
     )
 }
 
+data class PatchCategoryDto(
+    val title: String,
+) {
+    fun toModel(): Category = Category(
+        title = title,
+    )
+
+    fun toModel(id: Long): Category = Category(
+        id = id,
+        title = title,
+    )
+}
+
 fun Category.toDto(): CategoryDto = CategoryDto(
     id = id,
     title = title,

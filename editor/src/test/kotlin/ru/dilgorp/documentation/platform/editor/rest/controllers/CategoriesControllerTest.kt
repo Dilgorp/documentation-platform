@@ -6,13 +6,13 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.CategoryDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.domain.test.data.category
+import ru.dilgorp.documentation.platform.domain.test.data.patchCategoryDto
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
 import ru.dilgorp.documentation.platform.editor.utils.andReturn
@@ -86,9 +86,11 @@ class CategoriesControllerTest : BaseControllerTest() {
     @Test
     fun `create - happy path`() {
         val category = category()
-        val dto = category.toDto()
+        val dto = patchCategoryDto(
+            title = category.title,
+        )
 
-        whenever(categoriesService.save(category)).thenReturn(category)
+        whenever(categoriesService.save(category.copy(id = null))).thenReturn(category)
 
         val result = mvc.perform(
             post("/categories")
@@ -98,7 +100,30 @@ class CategoriesControllerTest : BaseControllerTest() {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn(CategoryDto::class)
 
-        assertEquals(dto, result)
+        assertEquals(category.toDto(), result)
+        verify(categoriesService).save(category.copy(id = null))
+    }
+
+    @Test
+    fun `update - happy path`() {
+        val categoryId = randomId()
+
+        val category = category(id = categoryId)
+        val dto = patchCategoryDto(
+            title = category.title,
+        )
+
+        whenever(categoriesService.save(category)).thenReturn(category)
+
+        val result = mvc.perform(
+            patch("/categories/$categoryId")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn(CategoryDto::class)
+
+        assertEquals(category.toDto(), result)
         verify(categoriesService).save(category)
     }
 }
