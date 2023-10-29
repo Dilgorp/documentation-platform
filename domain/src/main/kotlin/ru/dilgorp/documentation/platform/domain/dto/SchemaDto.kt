@@ -53,6 +53,22 @@ fun Schema.toDto(): SchemaDto = SchemaDto(
     items = items.map { it.toDto() }
 )
 
+data class PatchSchemaDto(
+    val title: String,
+    val description: String? = null,
+) {
+    fun toModel(): Schema = Schema(
+        title = title,
+        description = description,
+    )
+
+    fun toModel(id: Long): Schema = Schema(
+        id = id,
+        title = title,
+        description = description,
+    )
+}
+
 data class PatchSchemaItemDto(
     val itemId: Long,
 ) {

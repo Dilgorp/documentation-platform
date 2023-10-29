@@ -1,9 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
-import ru.dilgorp.documentation.platform.domain.dto.PatchSchemaItemDto
-import ru.dilgorp.documentation.platform.domain.dto.SchemaDto
-import ru.dilgorp.documentation.platform.domain.dto.toDto
+import ru.dilgorp.documentation.platform.domain.dto.*
 import ru.dilgorp.documentation.platform.editor.domain.services.SchemasService
 
 @RestController
@@ -19,13 +17,21 @@ class SchemasController(
     ): SchemaDto = schemasService.findById(id).toDto()
 
     @GetMapping
-    fun findAll(): List<SchemaDto> = schemasService.findAll().map { it.toDto() }
+    fun findAll(): List<SchemaListDto> = schemasService.findAll().map { it.toListDto() }
 
     @PostMapping
     fun create(
         @RequestBody
-        schemaDto: SchemaDto,
+        schemaDto: PatchSchemaDto,
     ): SchemaDto = schemasService.save(schemaDto.toModel()).toDto()
+
+    @PatchMapping("/{id}")
+    fun update(
+        @PathVariable("id")
+        id: Long,
+        @RequestBody
+        schemaDto: PatchSchemaDto,
+    ): SchemaDto = schemasService.save(schemaDto.toModel(id)).toDto()
 
     @PostMapping("/{schemaId}/items")
     fun createItem(
