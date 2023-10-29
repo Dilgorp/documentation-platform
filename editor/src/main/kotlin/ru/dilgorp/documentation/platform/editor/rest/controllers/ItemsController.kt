@@ -45,7 +45,7 @@ class ItemsController(
         @PathVariable("itemId")
         itemId: Long,
         @RequestBody
-        patchDto: PatchPropertyDto
+        patchDto: PatchPropertyItemDto
     ) {
         itemsService.createOrUpdateProperty(patchDto.toModel(itemId))
     }
@@ -57,7 +57,7 @@ class ItemsController(
         @PathVariable("itemPropertyId")
         itemPropertyId: Long,
         @RequestBody
-        patchDto: PatchPropertyDto
+        patchDto: PatchPropertyItemDto
     ) {
         itemsService.createOrUpdateProperty(patchDto.toModel(itemPropertyId, itemId))
     }
@@ -67,7 +67,7 @@ class ItemsController(
         @PathVariable("itemId")
         itemId: Long,
         @RequestBody
-        patchDto: PatchCategoryDto
+        patchDto: PatchCategoryItemDto
     ) {
         itemsService.createOrUpdateCategory(patchDto.toModel(itemId))
     }
@@ -79,7 +79,7 @@ class ItemsController(
         @PathVariable("itemCategoryId")
         itemCategoryId: Long,
         @RequestBody
-        patchDto: PatchCategoryDto
+        patchDto: PatchCategoryItemDto
     ) {
         itemsService.createOrUpdateCategory(patchDto.toModel(itemCategoryId, itemId))
     }

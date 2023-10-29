@@ -14,9 +14,9 @@ import ru.dilgorp.documentation.platform.domain.dto.ItemListDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.domain.dto.toListDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.item
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchCategoryDto
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchCategoryItemDto
 import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemDto
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyDto
+import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyItemDto
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
 import ru.dilgorp.documentation.platform.editor.utils.andReturn
@@ -134,7 +134,7 @@ class ItemsControllerTest : BaseControllerTest() {
     @Test
     fun `createProperty - happy path`() {
         val itemId = randomId()
-        val dto = patchPropertyDto()
+        val dto = patchPropertyItemDto()
 
         mvc.perform(
             post("/items/$itemId/properties")
@@ -150,7 +150,7 @@ class ItemsControllerTest : BaseControllerTest() {
     fun `updateProperty - happy path`() {
         val itemId = randomId()
         val itemPropertyId = randomId()
-        val dto = patchPropertyDto()
+        val dto = patchPropertyItemDto()
 
         mvc.perform(
             patch("/items/$itemId/properties/$itemPropertyId")
@@ -165,7 +165,7 @@ class ItemsControllerTest : BaseControllerTest() {
     @Test
     fun `createCategory - happy path`() {
         val itemId = randomId()
-        val dto = patchCategoryDto()
+        val dto = patchCategoryItemDto()
 
         mvc.perform(
             post("/items/$itemId/categories")
@@ -181,7 +181,7 @@ class ItemsControllerTest : BaseControllerTest() {
     fun `updateCategory - happy path`() {
         val itemId = randomId()
         val itemCategoryId = randomId()
-        val dto = patchCategoryDto()
+        val dto = patchCategoryItemDto()
 
         mvc.perform(
             patch("/items/$itemId/categories/$itemCategoryId")

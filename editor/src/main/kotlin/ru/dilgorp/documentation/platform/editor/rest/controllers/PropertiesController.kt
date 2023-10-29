@@ -1,6 +1,7 @@
 package ru.dilgorp.documentation.platform.editor.rest.controllers
 
 import org.springframework.web.bind.annotation.*
+import ru.dilgorp.documentation.platform.domain.dto.PatchPropertyDto
 import ru.dilgorp.documentation.platform.domain.dto.PropertyDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.editor.domain.services.PropertiesService
@@ -30,6 +31,14 @@ class PropertiesController(
     @PostMapping
     fun create(
         @RequestBody
-        propertyDto: PropertyDto,
+        propertyDto: PatchPropertyDto,
     ): PropertyDto = propertiesService.save(propertyDto.toModel()).toDto()
+
+    @PatchMapping("/{id}")
+    fun update(
+        @PathVariable("id")
+        id: Long,
+        @RequestBody
+        propertyDto: PatchPropertyDto,
+    ): PropertyDto = propertiesService.save(propertyDto.toModel(id)).toDto()
 }

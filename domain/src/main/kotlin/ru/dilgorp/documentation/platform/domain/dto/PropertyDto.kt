@@ -12,6 +12,19 @@ data class PropertyDto(
     )
 }
 
+data class PatchPropertyDto(
+    val title: String,
+) {
+    fun toModel(): Property = Property(
+        title = title,
+    )
+
+    fun toModel(id: Long): Property = Property(
+        id = id,
+        title = title,
+    )
+}
+
 fun Property.toDto(): PropertyDto = PropertyDto(
     id = id,
     title = title,

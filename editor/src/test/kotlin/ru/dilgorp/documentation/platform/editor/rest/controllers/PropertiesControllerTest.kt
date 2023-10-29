@@ -6,12 +6,12 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import ru.dilgorp.documentation.platform.domain.dto.PropertyDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
+import ru.dilgorp.documentation.platform.domain.test.data.patchPropertyDto
 import ru.dilgorp.documentation.platform.domain.test.data.property
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
@@ -86,9 +86,11 @@ class PropertiesControllerTest : BaseControllerTest() {
     @Test
     fun `create - happy path`() {
         val property = property()
-        val dto = property.toDto()
+        val dto = patchPropertyDto(
+            title = property.title,
+        )
 
-        whenever(propertiesService.save(property)).thenReturn(property)
+        whenever(propertiesService.save(property.copy(id = null))).thenReturn(property)
 
         val result = mvc.perform(
             post("/properties")
@@ -98,7 +100,30 @@ class PropertiesControllerTest : BaseControllerTest() {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn(PropertyDto::class)
 
-        assertEquals(dto, result)
+        assertEquals(property.toDto(), result)
+        verify(propertiesService).save(property.copy(id = null))
+    }
+
+    @Test
+    fun `update - happy path`() {
+        val propertyId = randomId()
+
+        val property = property(id = propertyId)
+        val dto = patchPropertyDto(
+            title = property.title,
+        )
+
+        whenever(propertiesService.save(property)).thenReturn(property)
+
+        val result = mvc.perform(
+            patch("/properties/$propertyId")
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        ).andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn(PropertyDto::class)
+
+        assertEquals(property.toDto(), result)
         verify(propertiesService).save(property)
     }
 }
