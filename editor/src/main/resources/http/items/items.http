@@ -1,0 +1,58 @@
+GET http://localhost:8081/items
+
+###
+GET http://localhost:8081/items/1
+
+###
+POST http://localhost:8081/items
+Content-Type: application/json
+
+{
+  "title": "item 1",
+  "description": "description item 1"
+}
+
+###
+PATCH http://localhost:8081/items/1
+Content-Type: application/json
+
+{
+  "title": "item 1 edited",
+  "description": "description item 1"
+}
+
+###
+POST http://localhost:8081/items/1/properties
+Content-Type: application/json
+
+{
+  "propertyId": 1,
+  "propertyValue": "value property 1 for item 1"
+}
+
+###
+PATCH http://localhost:8081/items/1/properties/1
+Content-Type: application/json
+
+{
+  "propertyId": 2,
+  "propertyValue": "value property 2 for item 1 edited from property 1"
+}
+
+###
+POST http://localhost:8081/items/1/properties
+Content-Type: application/json
+
+{
+  "propertyId": 1,
+  "propertyValue": "value property 1 for item 1"
+}
+
+###
+PATCH http://localhost:8081/items/1/properties/1
+Content-Type: application/json
+
+{
+  "propertyId": 2,
+  "propertyValue": "value property 2 for item 1 edited from property 1"
+}

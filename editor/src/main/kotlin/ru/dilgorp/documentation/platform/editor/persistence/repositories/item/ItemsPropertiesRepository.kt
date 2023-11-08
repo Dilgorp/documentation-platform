@@ -5,4 +5,5 @@ import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemPr
 
 interface ItemsPropertiesRepository : CrudRepository<ItemPropertyEntity, Long> {
     fun findByItemIdAndPropertyId(itemId: Long, propertyId: Long): ItemPropertyEntity?
+    fun findAllByItemId(itemId: Long): List<ItemPropertyEntity>
 }

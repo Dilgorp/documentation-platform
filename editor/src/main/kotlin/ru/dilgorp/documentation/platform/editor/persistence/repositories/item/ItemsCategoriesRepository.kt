@@ -5,4 +5,5 @@ import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemCa
 
 interface ItemsCategoriesRepository : CrudRepository<ItemCategoryEntity, Long> {
     fun findByItemIdAndCategoryId(itemId: Long, categoryId: Long): ItemCategoryEntity?
+    fun findAllByItemId(itemId: Long): List<ItemCategoryEntity>
 }
