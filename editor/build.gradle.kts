@@ -17,6 +17,7 @@ configurations {
 
 dependencies {
     implementation(project(":domain"))
+    implementation("ru.dilgorp:kafka-appender:1.0")
 
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-web")
