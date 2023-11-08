@@ -23,8 +23,11 @@ class ItemsService(
     private val propertyService: PropertiesService,
 ) {
 
-    fun save(item: Item): Item =
-        itemsRepository.save(item.toEntity()).toModel()
+    fun save(item: Item): Item {
+        val itemId = requireNotNull(itemsRepository.save(item.toEntity()).toModel().id)
+
+        return findById(itemId)
+    }
 
     fun findById(id: Long): Item {
         val itemProperties = itemsPropertiesRepository.findAllByItemId(id)
