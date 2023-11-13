@@ -13,13 +13,25 @@ import ru.dilgorp.documentation.platform.editor.persistence.repositories.schema.
 class SchemasService(
     private val schemasRepository: SchemasRepository,
     private val schemasItemsRepository: SchemasItemsRepository,
+    private val itemsService: ItemsService,
 ) {
 
-    fun save(schema: Schema): Schema =
-        schemasRepository.save(schema.toEntity()).toModel()
+    fun save(schema: Schema): Schema {
+        val entity = schemasRepository.save(schema.toEntity())
+        return findById(requireNotNull(entity.id))
+    }
 
-    fun findById(schemaId: Long): Schema =
-        schemasRepository.findById(schemaId).get().toModel()
+    fun findById(schemaId: Long): Schema {
+        val schemaEntity = schemasRepository.findById(schemaId).get()
+        val schemaItemsEntities = schemasItemsRepository.findAllBySchemaId(schemaId)
+        val items = itemsService.findAllByIds(schemaItemsEntities.map { it.itemId })
+        return schemaEntity.toModel(
+            schemaItemsEntities.map { schemaItemEntity ->
+                val item = requireNotNull(items[schemaItemEntity.itemId])
+                schemaItemEntity.toModel(item)
+            }
+        )
+    }
 
     fun findAll(): List<Schema> =
         schemasRepository.findAll().map { it.toModel() }

@@ -4,12 +4,24 @@ GET http://localhost:8081/items
 GET http://localhost:8081/items/1
 
 ###
+GET http://localhost:8081/items/map?ids=1
+
+###
 POST http://localhost:8081/items
 Content-Type: application/json
 
 {
   "title": "item 1",
   "description": "description item 1"
+}
+
+###
+POST http://localhost:8081/items
+Content-Type: application/json
+
+{
+  "title": "item 2",
+  "description": "description item 2"
 }
 
 ###
@@ -40,19 +52,20 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8081/items/1/properties
+POST http://localhost:8081/items/1/categories
 Content-Type: application/json
 
 {
-  "propertyId": 1,
-  "propertyValue": "value property 1 for item 1"
+  "categoryId": 1,
+  "categoryValue": "value category 1 for item 1"
 }
 
 ###
-PATCH http://localhost:8081/items/1/properties/1
+PATCH http://localhost:8081/items/1/categories/1
 Content-Type: application/json
 
 {
-  "propertyId": 2,
-  "propertyValue": "value property 2 for item 1 edited from property 1"
+  "categoryId": 2,
+  "parentCategoryId": 1,
+  "categoryValue": "value category 2 for item 1 edited from category 1 with parent category 1"
 }

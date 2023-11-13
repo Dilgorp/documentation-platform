@@ -1,0 +1,47 @@
+GET http://localhost:8081/schemas
+
+###
+GET http://localhost:8081/schemas/1
+
+###
+POST http://localhost:8081/schemas
+Content-Type: application/json
+
+{
+  "title": "schema 1",
+  "description": "description schema 1"
+}
+
+###
+POST http://localhost:8081/schemas
+Content-Type: application/json
+
+{
+  "title": "schema 2",
+  "description": "description schema 2"
+}
+
+###
+PATCH http://localhost:8081/schemas/1
+Content-Type: application/json
+
+{
+  "title": "schema 1 edited",
+  "description": "description schema 1 edited"
+}
+
+###
+POST http://localhost:8081/schemas/1/items
+Content-Type: application/json
+
+{
+  "itemId": 1
+}
+
+###
+PATCH http://localhost:8081/schemas/1/items/1
+Content-Type: application/json
+
+{
+  "itemId": 2
+}

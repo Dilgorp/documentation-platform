@@ -3,10 +3,12 @@ package ru.dilgorp.documentation.platform.editor.domain.services
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.dilgorp.documentation.platform.domain.models.Item
+import ru.dilgorp.documentation.platform.domain.models.ItemList
 import ru.dilgorp.documentation.platform.domain.models.PatchItemCategory
 import ru.dilgorp.documentation.platform.domain.models.PatchItemProperty
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
 import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
+import ru.dilgorp.documentation.platform.editor.domain.converters.toModelList
 import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemCategoryEntity
 import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemEntity
 import ru.dilgorp.documentation.platform.editor.persistence.entities.item.ItemPropertyEntity
@@ -23,8 +25,10 @@ class ItemsService(
     private val propertyService: PropertiesService,
 ) {
 
-    fun save(item: Item): Item =
-        itemsRepository.save(item.toEntity()).toModel()
+    fun save(item: Item): Item {
+        val itemEntity = itemsRepository.save(item.toEntity())
+        return findById(requireNotNull(itemEntity.id))
+    }
 
     fun findById(id: Long): Item {
         val itemProperties = itemsPropertiesRepository.findAllByItemId(id)
@@ -33,9 +37,9 @@ class ItemsService(
         return toModel(itemsRepository.findById(id).get(), itemCategories, itemProperties)
     }
 
-    fun findAllByIds(itemsIds: List<Long>): Map<Long, Item> =
+    fun findAllByIds(itemsIds: List<Long>): Map<Long, ItemList> =
         itemsRepository.findAllById(itemsIds)
-            .associate { requireNotNull(it.id) to it.toModel() }
+            .associate { requireNotNull(it.id) to it.toModelList() }
 
     fun findAll(): List<Item> =
         itemsRepository.findAll().map { it.toModel() }
@@ -80,16 +84,21 @@ class ItemsService(
         itemCategories: List<ItemCategoryEntity>,
         itemProperties: List<ItemPropertyEntity>,
     ): Item {
+        val categories = categoriesService.findAllByIds(
+            itemCategories.map { it.categoryId } + itemCategories.mapNotNull { it.parentCategoryId },
+        )
+        val properties = propertyService.findAllByIds(itemProperties.map { it.propertyId })
+
         return entity.toModel(
             categories = itemCategories.map { itemCategoryEntity ->
-                val category = categoriesService.findById(itemCategoryEntity.categoryId)
+                val category = requireNotNull(categories[itemCategoryEntity.categoryId])
                 val parentCategory = itemCategoryEntity.parentCategoryId?.let {
-                    categoriesService.findById(it)
+                    requireNotNull(categories[it])
                 }
                 itemCategoryEntity.toModel(category, parentCategory)
             },
             properties = itemProperties.map { itemPropertyEntity ->
-                val property = propertyService.findById(itemPropertyEntity.propertyId)
+                val property = requireNotNull(properties[itemPropertyEntity.propertyId])
                 itemPropertyEntity.toModel(property)
             }
         )

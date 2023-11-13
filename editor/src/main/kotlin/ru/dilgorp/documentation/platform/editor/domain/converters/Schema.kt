@@ -1,6 +1,6 @@
 package ru.dilgorp.documentation.platform.editor.domain.converters
 
-import ru.dilgorp.documentation.platform.domain.models.Item
+import ru.dilgorp.documentation.platform.domain.models.ItemList
 import ru.dilgorp.documentation.platform.domain.models.PatchSchemaItem
 import ru.dilgorp.documentation.platform.domain.models.Schema
 import ru.dilgorp.documentation.platform.domain.models.SchemaItem
@@ -27,7 +27,7 @@ fun Schema.toEntity(): SchemaEntity = SchemaEntity(
     description = description,
 )
 
-fun SchemaItemEntity.toModel(item: Item): SchemaItem = SchemaItem(
+fun SchemaItemEntity.toModel(item: ItemList): SchemaItem = SchemaItem(
     id = id,
     schemaId = schemaId,
     item = if (item.id == itemId) item else throw IllegalArgumentException("Item id and itemId are different"),

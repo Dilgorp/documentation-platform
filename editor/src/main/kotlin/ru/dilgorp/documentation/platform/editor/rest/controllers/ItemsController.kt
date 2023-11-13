@@ -23,7 +23,7 @@ class ItemsController(
     fun findAllById(
         @RequestParam("ids")
         ids: List<Long>,
-    ): Map<Long, ItemDto> = itemsService
+    ): Map<Long, ItemListDto> = itemsService
         .findAllByIds(ids).map { it.key to it.value.toDto() }.toMap()
 
     @PostMapping

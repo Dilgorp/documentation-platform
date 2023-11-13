@@ -57,8 +57,8 @@ class ItemsCategoriesRepositoryTest : BaseRepositoryTest() {
 
         assertEquals(entity.copy(id = savedEntity.id), savedEntity)
 
-        val foundedEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
-        assertEquals(savedEntity, foundedEntity)
+        val foundEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
+        assertEquals(savedEntity, foundEntity)
     }
 
     @Test
@@ -66,7 +66,52 @@ class ItemsCategoriesRepositoryTest : BaseRepositoryTest() {
         val itemEntity = itemsRepository.save(itemEntity(id = null))
         val categoryEntity = categoriesRepository.save(categoryEntity(id = null))
 
-        val foundedEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
-        assertNull(foundedEntity)
+        val foundEntity = itemsCategoriesRepository.findByItemIdAndCategoryId(itemEntity.id!!, categoryEntity.id!!)
+        assertNull(foundEntity)
+    }
+
+    @Test
+    fun `findAllByItemId - happy path`() {
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+        val categoryEntity = categoriesRepository.save(categoryEntity(id = null))
+
+        val itemEntity2 = itemsRepository.save(itemEntity(id = null))
+        val categoryEntity2 = categoriesRepository.save(categoryEntity(id = null))
+
+        val entities = itemsCategoriesRepository.saveAll(
+            listOf(
+                itemCategoryEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    categoryId = categoryEntity.id!!,
+                    parentCategoryId = null,
+                ),
+                itemCategoryEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    categoryId = categoryEntity.id!!,
+                    parentCategoryId = null,
+                ),
+                itemCategoryEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    categoryId = categoryEntity.id!!,
+                    parentCategoryId = null,
+                ),
+                itemCategoryEntity(
+                    id = null,
+                    itemId = itemEntity2.id!!,
+                    categoryId = categoryEntity2.id!!,
+                    parentCategoryId = null,
+                ),
+            )
+        )
+
+        val foundEntities = itemsCategoriesRepository.findAllByItemId(itemEntity.id!!)
+
+        assertEquals(
+            entities.filter { it.itemId == itemEntity.id!! }.sortedBy { it.id },
+            foundEntities.sortedBy { it.id }
+        )
     }
 }

@@ -5,11 +5,19 @@ import ru.dilgorp.documentation.platform.domain.models.*
 data class ItemListDto(
     val id: Long,
     val title: String,
+    val description: String? = null,
 )
 
 fun Item.toListDto(): ItemListDto = ItemListDto(
     id = requireNotNull(id),
     title = title,
+    description = description,
+)
+
+fun ItemList.toDto(): ItemListDto = ItemListDto(
+    id = requireNotNull(id),
+    title = title,
+    description = description,
 )
 
 data class ItemDto(

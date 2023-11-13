@@ -8,14 +8,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import ru.dilgorp.documentation.platform.domain.test.data.item.item
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemCategory
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemProperty
+import ru.dilgorp.documentation.platform.domain.test.data.item.*
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.domain.test.utils.randomUuid
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
-import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
+import ru.dilgorp.documentation.platform.editor.domain.converters.toModelList
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemCategoryEntity
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemEntity
 import ru.dilgorp.documentation.platform.editor.persistence.data.item.itemPropertyEntity
@@ -32,24 +30,60 @@ internal class ItemsServiceTest : BaseServiceTest() {
         val entity = model.toEntity()
 
         whenever(itemsRepository.save(entity)).thenReturn(entity)
+        whenever(itemsRepository.findById(entity.id!!)).thenReturn(Optional.of(entity))
+        whenever(itemsPropertiesRepository.findAllByItemId(entity.id!!))
+            .thenReturn(emptyList())
+        whenever(itemsCategoriesRepository.findAllByItemId(entity.id!!))
+            .thenReturn(emptyList())
+        whenever(propertiesRepository.findAllById(emptyList())).thenReturn(emptyList())
+        whenever(categoriesRepository.findAllById(emptyList())).thenReturn(emptyList())
+
         val result = itemsService.save(model)
 
         assertEquals(model, result)
         verify(itemsRepository).save(entity)
+        verify(itemsRepository).findById(entity.id!!)
+        verify(itemsPropertiesRepository).findAllByItemId(entity.id!!)
+        verify(itemsCategoriesRepository).findAllByItemId(entity.id!!)
+        verify(propertiesRepository).findAllById(emptyList())
+        verify(categoriesRepository).findAllById(emptyList())
     }
 
     @Test
     fun `findById - happy path`() {
         val id = randomId()
-        val model = item(id = id)
+        val model = item(
+            id = id,
+            properties = listOf(
+                itemProperty(itemId = id),
+            ),
+            categories = listOf(
+                itemCategory(itemId = id),
+            ),
+        )
+        val propertyEntities = model.properties.map { it.toEntity() }
+        val categoryEntities = model.categories.map { it.toEntity() }
 
         whenever(itemsRepository.findById(id))
             .thenReturn(Optional.of(model.toEntity()))
+        whenever(itemsPropertiesRepository.findAllByItemId(id))
+            .thenReturn(propertyEntities)
+        whenever(itemsCategoriesRepository.findAllByItemId(id))
+            .thenReturn(categoryEntities)
+        whenever(propertiesRepository.findAllById(propertyEntities.map { it.propertyId }))
+            .thenReturn(model.properties.map { it.property.toEntity() })
+        whenever(categoriesRepository.findAllById(categoryEntities.map { it.categoryId }))
+            .thenReturn(model.categories.map { it.category.toEntity() }
+                    + model.categories.mapNotNull { it.parentCategory?.toEntity() })
 
         val result = itemsService.findById(id)
 
         assertEquals(model, result)
         verify(itemsRepository).findById(id)
+        verify(itemsPropertiesRepository).findAllByItemId(id)
+        verify(itemsCategoriesRepository).findAllByItemId(id)
+        verify(propertiesRepository).findAllById(propertyEntities.map { it.propertyId })
+        verify(categoriesRepository).findAllById(categoryEntities.map { it.categoryId })
     }
 
     @Test
@@ -78,7 +112,7 @@ internal class ItemsServiceTest : BaseServiceTest() {
 
         val entities = ids.map { itemEntity(id = it) }
         val map = entities.associate {
-            it.id!! to it.toModel()
+            it.id!! to it.toModelList()
         }
 
         whenever(itemsRepository.findAllById(ids + notFoundId))

@@ -8,6 +8,12 @@ data class Item(
     val properties: List<ItemProperty> = emptyList(),
 )
 
+data class ItemList(
+    val id: Long? = null,
+    val title: String,
+    val description: String? = null,
+)
+
 data class ItemProperty(
     val id: Long? = null,
     val itemId: Long,

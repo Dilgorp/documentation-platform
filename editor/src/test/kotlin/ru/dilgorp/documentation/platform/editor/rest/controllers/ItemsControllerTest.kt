@@ -13,10 +13,7 @@ import ru.dilgorp.documentation.platform.domain.dto.ItemDto
 import ru.dilgorp.documentation.platform.domain.dto.ItemListDto
 import ru.dilgorp.documentation.platform.domain.dto.toDto
 import ru.dilgorp.documentation.platform.domain.dto.toListDto
-import ru.dilgorp.documentation.platform.domain.test.data.item.item
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchCategoryItemDto
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchItemDto
-import ru.dilgorp.documentation.platform.domain.test.data.item.patchPropertyItemDto
+import ru.dilgorp.documentation.platform.domain.test.data.item.*
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseControllerTest
 import ru.dilgorp.documentation.platform.editor.utils.andReturn
@@ -66,9 +63,9 @@ class ItemsControllerTest : BaseControllerTest() {
     @Test
     fun `findAllById - happy path`() {
         val modelsMap = listOf(
-            item(),
-            item(),
-            item(),
+            itemList(),
+            itemList(),
+            itemList(),
         ).associateBy { it.id!! }
 
         val ids = modelsMap.keys.toList()
@@ -81,7 +78,7 @@ class ItemsControllerTest : BaseControllerTest() {
             get("/items/map?${ids.joinToString(prefix = "ids=") { it.toString() }}")
         ).andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn(object : TypeReference<Map<Long, ItemDto>>() {})
+            .andReturn(object : TypeReference<Map<Long, ItemListDto>>() {})
 
         assertEquals(dtoMap, result)
         verify(itemsService).findAllByIds(ids)

@@ -13,6 +13,12 @@ fun ItemEntity.toModel(): Item = Item(
     properties = emptyList(),
 )
 
+fun ItemEntity.toModelList(): ItemList = ItemList(
+    id = id,
+    title = title,
+    description = description,
+)
+
 fun ItemEntity.toModel(categories: List<ItemCategory>, properties: List<ItemProperty>): Item = Item(
     id = id,
     title = title,

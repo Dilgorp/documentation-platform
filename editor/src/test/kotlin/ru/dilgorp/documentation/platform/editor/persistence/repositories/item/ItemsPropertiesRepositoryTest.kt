@@ -54,8 +54,8 @@ class ItemsPropertiesRepositoryTest : BaseRepositoryTest() {
 
         assertEquals(entity.copy(id = savedEntity.id), savedEntity)
 
-        val foundedEntity = itemsPropertiesRepository.findByItemIdAndPropertyId(itemEntity.id!!, propertyEntity.id!!)
-        assertEquals(savedEntity, foundedEntity)
+        val foundEntity = itemsPropertiesRepository.findByItemIdAndPropertyId(itemEntity.id!!, propertyEntity.id!!)
+        assertEquals(savedEntity, foundEntity)
     }
 
     @Test
@@ -63,7 +63,48 @@ class ItemsPropertiesRepositoryTest : BaseRepositoryTest() {
         val itemEntity = itemsRepository.save(itemEntity(id = null))
         val propertyEntity = propertiesRepository.save(propertyEntity(id = null))
 
-        val foundedEntity = itemsPropertiesRepository.findByItemIdAndPropertyId(itemEntity.id!!, propertyEntity.id!!)
-        assertNull(foundedEntity)
+        val foundEntity = itemsPropertiesRepository.findByItemIdAndPropertyId(itemEntity.id!!, propertyEntity.id!!)
+        assertNull(foundEntity)
+    }
+
+    @Test
+    fun `findAllByItemId - happy path`() {
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+        val propertyEntity = propertiesRepository.save(propertyEntity(id = null))
+
+        val itemEntity2 = itemsRepository.save(itemEntity(id = null))
+        val propertyEntity2 = propertiesRepository.save(propertyEntity(id = null))
+
+        val entities = itemsPropertiesRepository.saveAll(
+            listOf(
+                itemPropertyEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    propertyId = propertyEntity.id!!,
+                ),
+                itemPropertyEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    propertyId = propertyEntity.id!!,
+                ),
+                itemPropertyEntity(
+                    id = null,
+                    itemId = itemEntity.id!!,
+                    propertyId = propertyEntity.id!!,
+                ),
+                itemPropertyEntity(
+                    id = null,
+                    itemId = itemEntity2.id!!,
+                    propertyId = propertyEntity2.id!!,
+                ),
+            )
+        )
+
+        val foundEntities = itemsPropertiesRepository.findAllByItemId(itemEntity.id!!)
+
+        assertEquals(
+            entities.filter { it.itemId == itemEntity.id!! }.sortedBy { it.id },
+            foundEntities.sortedBy { it.id },
+        )
     }
 }

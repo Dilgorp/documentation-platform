@@ -3,7 +3,7 @@ package ru.dilgorp.documentation.platform.editor.domain.converters
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import ru.dilgorp.documentation.platform.domain.test.data.item.item
+import ru.dilgorp.documentation.platform.domain.test.data.item.itemList
 import ru.dilgorp.documentation.platform.domain.test.data.schema.schema
 import ru.dilgorp.documentation.platform.domain.test.data.schema.schemaItem
 import ru.dilgorp.documentation.platform.domain.test.utils.diffFromRandom
@@ -100,7 +100,7 @@ internal class SchemaConverterTest {
     fun `SchemaItemEntity - toModel - happy path`() {
         val itemId = randomId()
 
-        val item = item(id = itemId)
+        val item = itemList(id = itemId)
 
         val model = schemaItem(
             id = 1,
@@ -120,7 +120,7 @@ internal class SchemaConverterTest {
     fun `SchemaItemEntity - toModel - item with invalid id`() {
         val itemId = randomId()
 
-        val item = item(id = itemId)
+        val item = itemList(id = itemId)
 
         val entity = schemaItemEntity(
             id = 1,
@@ -137,7 +137,7 @@ internal class SchemaConverterTest {
     fun `SchemaItem - toEntity - happy path`() {
         val itemId = randomId()
 
-        val item = item(id = itemId)
+        val item = itemList(id = itemId)
 
         val model = schemaItem(
             id = 1,

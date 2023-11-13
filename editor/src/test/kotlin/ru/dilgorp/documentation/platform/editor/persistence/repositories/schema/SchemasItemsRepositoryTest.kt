@@ -65,4 +65,45 @@ class SchemasItemsRepositoryTest : BaseRepositoryTest() {
         val result = schemasItemsRepository.findBySchemaIdAndItemId(schemaEntity.id!!, itemEntity.id!!)
         assertNull(result)
     }
+
+    @Test
+    fun `findAllBySchemaId - happy path`() {
+        val schemaEntity = schemasRepository.save(schemaEntity(id = null))
+        val itemEntity = itemsRepository.save(itemEntity(id = null))
+
+        val schemaEntity2 = schemasRepository.save(schemaEntity(id = null))
+        val itemEntity2 = itemsRepository.save(itemEntity(id = null))
+
+        val entities = schemasItemsRepository.saveAll(
+            listOf(
+                schemaItemEntity(
+                    id = null,
+                    schemaId = schemaEntity.id!!,
+                    itemId = itemEntity.id!!,
+                ),
+                schemaItemEntity(
+                    id = null,
+                    schemaId = schemaEntity.id!!,
+                    itemId = itemEntity.id!!,
+                ),
+                schemaItemEntity(
+                    id = null,
+                    schemaId = schemaEntity.id!!,
+                    itemId = itemEntity.id!!,
+                ),
+                schemaItemEntity(
+                    id = null,
+                    schemaId = schemaEntity2.id!!,
+                    itemId = itemEntity2.id!!,
+                ),
+            ),
+        )
+
+        val result = schemasItemsRepository.findAllBySchemaId(schemaEntity.id!!)
+
+        assertEquals(
+            entities.filter { it.schemaId == schemaEntity.id!! }.sortedBy { it.id },
+            result.sortedBy { it.id }
+        )
+    }
 }

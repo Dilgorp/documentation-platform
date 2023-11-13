@@ -5,4 +5,5 @@ import ru.dilgorp.documentation.platform.editor.persistence.entities.schema.Sche
 
 interface SchemasItemsRepository : CrudRepository<SchemaItemEntity, Long> {
     fun findBySchemaIdAndItemId(schemaId: Long, itemId: Long): SchemaItemEntity?
+    fun findAllBySchemaId(schemaId: Long): List<SchemaItemEntity>
 }

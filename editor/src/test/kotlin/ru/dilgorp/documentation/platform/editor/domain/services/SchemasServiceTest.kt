@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import ru.dilgorp.documentation.platform.domain.test.data.schema.patchSchemaItem
 import ru.dilgorp.documentation.platform.domain.test.data.schema.schema
+import ru.dilgorp.documentation.platform.domain.test.data.schema.schemaItem
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
@@ -20,16 +22,26 @@ internal class SchemasServiceTest : BaseServiceTest() {
     @Autowired
     private lateinit var schemasService: SchemasService
 
+    @MockBean
+    private lateinit var itemsService: ItemsService
+
     @Test
     fun `save - happy path`() {
         val model = schema(items = emptyList())
         val entity = model.toEntity()
 
         whenever(schemasRepository.save(entity)).thenReturn(entity)
+        whenever(schemasRepository.findById(entity.id!!)).thenReturn(Optional.of(entity))
+        whenever(schemasItemsRepository.findAllBySchemaId(entity.id!!)).thenReturn(emptyList())
+        whenever(itemsService.findAllByIds(emptyList())).thenReturn(emptyMap())
+
         val result = schemasService.save(model)
 
         assertEquals(model, result)
         verify(schemasRepository).save(entity)
+        verify(schemasRepository).findById(entity.id!!)
+        verify(schemasItemsRepository).findAllBySchemaId(entity.id!!)
+        verify(itemsService).findAllByIds(emptyList())
     }
 
     @Test
@@ -37,16 +49,26 @@ internal class SchemasServiceTest : BaseServiceTest() {
         val id = randomId()
         val model = schema(
             id = id,
-            items = emptyList(),
+            items = listOf(
+                schemaItem(schemaId = id),
+                schemaItem(schemaId = id),
+            ),
         )
+        val schemaItemsEntities = model.items.map { it.toEntity() }
 
         whenever(schemasRepository.findById(id))
             .thenReturn(Optional.of(model.toEntity()))
+        whenever(schemasItemsRepository.findAllBySchemaId(id))
+            .thenReturn(schemaItemsEntities)
+        whenever(itemsService.findAllByIds(schemaItemsEntities.map { it.itemId }))
+            .thenReturn(model.items.associate { it.item.id!! to it.item })
 
         val result = schemasService.findById(id)
 
         assertEquals(model, result)
         verify(schemasRepository).findById(id)
+        verify(schemasItemsRepository).findAllBySchemaId(id)
+        verify(itemsService).findAllByIds(schemaItemsEntities.map { it.itemId })
     }
 
     @Test
