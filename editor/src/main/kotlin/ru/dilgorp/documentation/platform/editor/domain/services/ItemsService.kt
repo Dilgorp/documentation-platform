@@ -103,4 +103,7 @@ class ItemsService(
             }
         )
     }
+
+    fun findAllByTitle(title: String): List<ItemList> =
+        itemsRepository.findAllByTitle(title).map { it.toModelList() }
 }

@@ -260,4 +260,22 @@ internal class ItemsServiceTest : BaseServiceTest() {
             ),
         )
     }
+
+    @Test
+    fun `findAllByTitle - happy path`() {
+        val title = randomUuid()
+        val itemEntities = listOf(
+            itemEntity(title = title),
+            itemEntity(title = title),
+            itemEntity(title = title),
+        )
+
+        whenever(itemsRepository.findAllByTitle(title))
+            .thenReturn(itemEntities)
+
+        val result = itemsService.findAllByTitle(title)
+
+        assertEquals(itemEntities.map { it.toModelList() }, result)
+        verify(itemsRepository).findAllByTitle(title)
+    }
 }

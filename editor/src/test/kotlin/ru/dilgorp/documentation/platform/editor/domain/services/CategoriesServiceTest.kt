@@ -8,6 +8,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.domain.test.data.category
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
+import ru.dilgorp.documentation.platform.domain.test.utils.randomUuid
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
 import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
@@ -98,6 +99,19 @@ internal class CategoriesServiceTest : BaseServiceTest() {
 
         assertEquals(models, result)
         verify(categoriesRepository).findAll()
+    }
+
+    @Test
+    fun `findByTitle - happy path`() {
+        val title = randomUuid()
+        val categoryEntity = categoryEntity(title = title)
+
+        whenever(categoriesRepository.findByTitle(title))
+            .thenReturn(categoryEntity)
+
+        val result = categoriesService.findByTitle(title)
+        assertEquals(categoryEntity.toModel(), result)
+        verify(categoriesRepository).findByTitle(title)
     }
 
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import ru.dilgorp.documentation.platform.domain.test.data.property
 import ru.dilgorp.documentation.platform.domain.test.utils.randomId
+import ru.dilgorp.documentation.platform.domain.test.utils.randomUuid
 import ru.dilgorp.documentation.platform.editor.base.BaseServiceTest
 import ru.dilgorp.documentation.platform.editor.domain.converters.toEntity
 import ru.dilgorp.documentation.platform.editor.domain.converters.toModel
@@ -98,6 +99,19 @@ internal class PropertiesServiceTest : BaseServiceTest() {
 
         assertEquals(models, result)
         verify(propertiesRepository).findAll()
+    }
+
+    @Test
+    fun `findByTitle - happy path`() {
+        val title = randomUuid()
+        val propertyEntity = propertyEntity()
+
+        whenever(propertiesRepository.findByTitle(title))
+            .thenReturn(propertyEntity)
+
+        val result = propertiesService.findByTitle(title)
+        assertEquals(propertyEntity.toModel(), result)
+        verify(propertiesRepository).findByTitle(title)
     }
 
 }

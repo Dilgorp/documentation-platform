@@ -24,4 +24,7 @@ class CategoriesService(
     fun findAll(): List<Category> =
         categoriesRepository.findAll().map { it.toModel() }
 
+    fun findByTitle(title: String): Category? =
+        categoriesRepository.findByTitle(title)?.toModel()
+
 }

@@ -1,0 +1,558 @@
+[
+  {
+    "title": "Отправка СМС на оплату по nonbId",
+    "description": "Если в dto переданы данные плательщика (personId и versionId}, они обновляются Если данные плательщика не переданы, идет попытка обновить плательщика по покупателю в сделке (для неипотеки). Если статус платежа OFFERED, меняется на NOT_PAID. Синхронисируется с данными из Pay. Отправляется смс (при необходимости создается платеж в Pay).",
+    "categories": [
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      },
+      {
+        "title": "Контроллер",
+        "name": "InvoiceSrvController"
+      },
+      {
+        "title": "Этап заявки",
+        "name": "DRAFT"
+      },
+      {
+        "title": "Этап заявки",
+        "name": "SERVICES_PAYMENT"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "InvoiceService.sendSmsByNonbDealId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/sms"
+      },
+      {
+        "title": "Возвращает",
+        "value": "успешность выполнения, телефон (при успешном выполнении}, время, через которое можно снова пробовать отправить с секундах"
+      }
+    ]
+  },
+  {
+    "title": "Скачивание квитанции на оплату",
+    "description": "Если статус платежа OFFERED, меняется на NOT_PAID. Синхронисируется с данными из Pay. Получает из Pay квитанцию об оплате (при необходимости создается платеж в Pay).",
+    "categories": [
+      {
+        "title": "Cервис КУ",
+        "name": "Document"
+      },
+      {
+        "title": "Контроллер",
+        "name": "InvoiceSrvController"
+      },
+      {
+        "title": "Этап заявки",
+        "name": "SIGNING_OFFER"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "InvoiceService.generateReceiptByNonbDealId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/receipt"
+      },
+      {
+        "title": "Возвращает",
+        "value": "массив байт файла квитанции"
+      }
+    ]
+  },
+  {
+    "title": "Регистрация платежа в Pay",
+    "description": "Создает платеж в Pay. Если платеж уже создан, возвращает его идентификатор.",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "InvoiceSrvController"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "InvoiceService.registerPaymentInPay"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/pay/payment"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Идентифиактор в Pay"
+      }
+    ]
+  },
+  {
+    "title": "Получение данных по платежам",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentService.getPaymentsByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Список платежей по nonbId"
+      }
+    ]
+  },
+  {
+    "title": "Получение данных по активным платежам",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Validator"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentService.getPaymentsByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/active"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Список сокращенных данных по платежам"
+      }
+    ]
+  },
+  {
+    "title": "Наличие согласия на пакет",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentService.checkHasPackageByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/has-package"
+      },
+      {
+        "title": "Возвращает",
+        "value": "true, если в сделке есть платеж с типом PACKAGE, иначе возвращает false."
+      }
+    ]
+  },
+  {
+    "title": "Пересчет номеров оферт СЭР и СБР",
+    "description": "Генерируются / пересчитываются номера (записываются в БД).",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "PATCH"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "NumberOfferService.recalculateByNonbDealIds"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/payments/number/recalculate"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Список типов платежей (для каждого из переданных nonbId) и соотвествующие им номера."
+      }
+    ]
+  },
+  {
+    "title": "Получение детальной информации по платежу",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PriceService.getPaymentDetails"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/details"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Разбивку цены платежа по составляющим"
+      }
+    ]
+  },
+  {
+    "title": "Сброс плательщика",
+    "description": "Для платежей с переданными идентификаторами сбрасываются значения полей nonbParticipantId, personId, versionId",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "PATCH"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentService.resetPayer"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/reset/payers/details"
+      },
+      {
+        "title": "Возвращает",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "title": "Установка типа оплаты и плательщика",
+    "description": "Устанавливает для платежа значения полей payType, nonbParticipantId, personId, versionId",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "PATCH"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentDataPreparerService.patchPayerAndPayType"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/pay/details"
+      },
+      {
+        "title": "Возвращает",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "title": "Получение платежей по nonbId и списку услуг",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Notification-center"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PaymentService.getPaymentsByNonbIdAndServices"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/active/services"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Список упрощенных платежей по переданным типам услуг и nonbId"
+      }
+    ]
+  },
+  {
+    "title": "Регистрация платежей в Pay",
+    "description": "Создает платеж в Pay (если не создан). Устанавливает для платежа payIdentifier.",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "PaymentSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Orchestrator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "PayService.registerPaymentsByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/register/pay/payments"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Информацию об успешности регистрации по каждому из платежей"
+      }
+    ]
+  },
+  {
+    "title": "Оформление заявки на возврат",
+    "description": "Обновляет данные плательщика. Изменяет статус платежа на PREREFUND. Создает / актуализирует в сервисе refund заявку на возврат (отправляет смс). Проставляет статус WAITING_FOR_REFUND_APPLICATION в sh.",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "RefundSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "RefundService.requestRefund"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/refund"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Информацию об успешности оформления завки. В случае успеха, возвращает телефон, на который отправленна ссылка для заявки"
+      }
+    ]
+  },
+  {
+    "title": "Получение списка причин для возврата ДС",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "RefundSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "RefundService.getRefundReasons"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/{nonbId}/payments/{paymentId}/refund/reasons"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Список причин для возврада по услуге ДКП"
+      }
+    ]
+  },
+  {
+    "title": "Скачивание соглашения",
+    "description": "",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "RefundSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "GET"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "RefundService.downloadAgreementByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/refund/agreement"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Массив байт. Соглашение на возврат."
+      }
+    ]
+  },
+  {
+    "title": "Отправка смс клиенту на возврат",
+    "description": "Создает / актуализирует в сервисе refund заявку на возврат (отправляет смс).",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "RefundSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "POST"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "RefundService.sendSmsByNonbDealId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/deals/{nonbId}/payments/{paymentId}/refund/sms"
+      },
+      {
+        "title": "Возвращает",
+        "value": "Информацию об успешности отправки смс. В случае успеха, возвращает телефон, на который отправленна ссылка для заявки"
+      }
+    ]
+  },
+  {
+    "title": "Отмена заявки на возврат",
+    "description": "Меняет статус платежа на PAID. Меняет статус заявки на возврат на CANCELLED.",
+    "categories": [
+      {
+        "title": "Контроллер",
+        "name": "RefundSrvController"
+      },
+      {
+        "title": "Cервис КУ",
+        "name": "Mediator"
+      }
+    ],
+    "properties": [
+      {
+        "title": "Http-метод",
+        "value": "PUT"
+      },
+      {
+        "title": "Метод обработки",
+        "value": "RefundService.cancelRefundByNonbId"
+      },
+      {
+        "title": "Http-путь",
+        "value": "/{nonbId}/payments/{paymentId}/refund/cancel"
+      },
+      {
+        "title": "Возвращает",
+        "value": ""
+      }
+    ]
+  }
+]

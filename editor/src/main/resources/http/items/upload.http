@@ -1,0 +1,7 @@
+POST http://localhost:8081/admin/data
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="initial_data.txt"
+
+< ../../json/inital_data.json

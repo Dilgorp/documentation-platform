@@ -24,4 +24,7 @@ class PropertiesService(
     fun findAll(): List<Property> =
         propertiesRepository.findAll().map { it.toModel() }
 
+    fun findByTitle(title: String): Property? =
+        propertiesRepository.findByTitle(title)?.toModel()
+
 }
